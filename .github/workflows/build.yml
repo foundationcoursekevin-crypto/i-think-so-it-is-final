@@ -13,14 +13,14 @@ jobs:
           sudo apt-get install -y build-essential gcc-multilib grub-pc-bin grub-common xorriso mtools
       - name: Unpack the source tar if needed
         run: |
-          if [ ! -f vinos/Makefile ]; then
-            t=$(ls vinos-*.tar* 2>/dev/null | head -n1)
-            [ -n "$t" ] && tar -xf "$t"
+          if [ ! -f VinOS-1.8-github-/Makefile ]; then
+            t=$(ls VinOS-1.8-github--*.zip* 2>/dev/null | head -n1)
+            [ -n "$t" ] && zip -xf "$t"
           fi
-          test -f vinos/Makefile
+          test -f VinOS-1.8-github-/Makefile
       - name: Build ISO
         run: |
-          cd vinos
+          cd VinOS-1.8-github-
           make clean
           make iso
           cp vinos.iso ../vinos.iso
