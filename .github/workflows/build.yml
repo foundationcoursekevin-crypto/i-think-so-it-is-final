@@ -1,0 +1,35 @@
+name: Build VinOS ISO
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc-multilib grub-pc-bin grub-common xorriso mtools
+      - name: Unpack the source tar if needed
+        run: |
+          if [ ! -f vinos/Makefile ]; then
+            t=$(ls vinos-*.tar* 2>/dev/null | head -n1)
+            [ -n "$t" ] && tar -xf "$t"
+          fi
+          test -f vinos/Makefile
+      - name: Build ISO
+        run: |
+          cd vinos
+          make clean
+          make iso
+          cp vinos.iso ../vinos.iso
+          make iso-100mb
+          cp vinos.iso ../vinos-100mb.iso
+      - name: Upload ISO files
+        uses: actions/upload-artifact@v4
+        with:
+          name: vinos-iso
+          path: |
+            vinos.iso
+            vinos-100mb.iso
